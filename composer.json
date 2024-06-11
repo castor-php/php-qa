@@ -1,0 +1,21 @@
+{
+    "name": "castor-php/php-qa",
+    "description": "PHP Quality tools functions for castor",
+    "type": "castor-plugin",
+    "require-dev": {
+        "jolicode/castor": "^0.17.1"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "CastorPhp\\PhpQa\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Joel Wurtz",
+            "email": "jwurtz@jolicode.com"
+        }
+    ],
+    "require": {}
+}
