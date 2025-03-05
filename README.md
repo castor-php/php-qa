@@ -26,7 +26,7 @@ use function Castor\PHPQa\phpstan;
 #[AsTask('phpstan', namespace: 'qa')]
 function qa_phpstan()
 {
-    phpstan(['analyze', __DIR__ . '/src']);
+    phpstan();
 }
 ```
 
@@ -35,7 +35,7 @@ function qa_phpstan()
 By default the latest version of the tool is used. However it is recommended to use a specific version
 so you don't have different version depending the environment.
 
-You can pass the version as the second argument of the function.
+You can pass the version as an argument of the function.
 
 ```php
 <?php
@@ -46,13 +46,31 @@ use function Castor\PHPQa\phpstan;
 #[AsTask('phpstan', namespace: 'qa')]
 function qa_phpstan()
 {
-    phpstan(['analyze', __DIR__ . '/src'], version: '1.11.0');
+    phpstan(version: '1.11.0');
+}
+```
+
+### Extra dependencies
+
+Some tools may require extra dependencies to be installed. You can pass them as an argument of the function.
+
+```php
+<?php
+
+use Castor\Attribute\AsTask;
+use function Castor\PHPQa\php_cs_fixer;
+
+#[AsTask('php_cs_fixer', namespace: 'qa')]
+function qa_pphp_cs_fixer()
+{
+    php_cs_fixer(extraDependencies: [
+        'kubawerlos/php-cs-fixer-custom-fixers' => '^3.21',
+    ]);
 }
 ```
 
 ## Provided tools
 
 * [PHPStan](https://phpstan.org/): `Castor\PHPQa\phpstan()` function
-* [Psalm](https://psalm.dev/): `Castor\PHPQa\psalm()` function
 * [PHP CS Fixer](https://cs.symfony.com/): `Castor\PHPQa\php_cs_fixer()` function
 
