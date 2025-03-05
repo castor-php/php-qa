@@ -13,7 +13,7 @@ require 'src/functions.php';
 #[AsTask('phpstan', namespace: 'qa')]
 function qa_phpstan()
 {
-    phpstan(['analyze', __DIR__ . '/src'], version: '1.11.0');
+    phpstan(['analyze', __DIR__ . '/src'], version: '2.1.6');
 }
 
 #[AsTask('php-cs-fixer', namespace: 'qa')]
