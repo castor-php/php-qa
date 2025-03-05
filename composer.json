@@ -3,13 +3,16 @@
     "description": "PHP Quality tools functions for castor",
     "type": "castor-plugin",
     "require-dev": {
-        "jolicode/castor": "^0.17.1"
+        "jolicode/castor": "^0.22.1"
     },
     "license": "MIT",
     "autoload": {
         "psr-4": {
             "CastorPhp\\PhpQa\\": "src/"
-        }
+        },
+        "files": [
+            "src/functions.php"
+        ]
     },
     "authors": [
         {
