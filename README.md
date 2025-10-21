@@ -61,7 +61,7 @@ use Castor\Attribute\AsTask;
 use function Castor\PHPQa\php_cs_fixer;
 
 #[AsTask('php_cs_fixer', namespace: 'qa')]
-function qa_pphp_cs_fixer()
+function qa_php_cs_fixer()
 {
     php_cs_fixer(extraDependencies: [
         'kubawerlos/php-cs-fixer-custom-fixers' => '^3.21',
