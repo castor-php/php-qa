@@ -8,8 +8,6 @@ use function Castor\PHPQa\php_cs_fixer;
 use function Castor\PHPQa\phpstan;
 use function Castor\PHPQa\psalm;
 
-require 'src/functions.php';
-
 #[AsTask('phpstan', namespace: 'qa')]
 function qa_phpstan()
 {
