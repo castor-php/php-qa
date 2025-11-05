@@ -6,7 +6,6 @@ use Castor\Attribute\AsTask;
 
 use function Castor\PHPQa\php_cs_fixer;
 use function Castor\PHPQa\phpstan;
-use function Castor\PHPQa\psalm;
 
 #[AsTask('phpstan', namespace: 'qa')]
 function qa_phpstan()
