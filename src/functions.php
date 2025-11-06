@@ -2,9 +2,11 @@
 
 namespace Castor\PHPQa;
 
+use Castor\Console\Output\VerbosityLevel;
 use Castor\Import\Remote\ComposerApplication;
 use http\Exception\RuntimeException;
 use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Process\Process;
 
 use function Castor\context;
 use function Castor\fingerprint;
@@ -12,7 +14,11 @@ use function Castor\hasher;
 use function Castor\output;
 use function Castor\run_php;
 
-function create_tools(string $name, array $dependencies = [])
+/**
+ * @param array<string, string> $dependencies A list of composer dependencies to require
+ * @return string
+ */
+function create_tools(string $name, array $dependencies = []): string
 {
     $toolsDirectory = context()->workingDirectory . '/.castor/vendor/.tools/' . $name;
     $composerFile = $toolsDirectory . '/composer.json';
@@ -34,13 +40,19 @@ function create_tools(string $name, array $dependencies = [])
             composer(['update'], $composerFile);
         },
         id: 'tools-' . $name,
-        fingerprint: hasher()->write($composerJson)->write(file_exists($composerFile))->finish(),
+        fingerprint: hasher()->write((string) $composerJson)->finish(),
+        force: !file_exists($composerFile),
     );
 
     return $toolsDirectory;
 }
 
-function phpstan(?array $arguments = null, string $version = '*', array $extraDependencies = [])
+
+/**
+ * @param list<string> $arguments
+ * @param array<string, string> $extraDependencies
+ */
+function phpstan(?array $arguments = null, string $version = '*', array $extraDependencies = []): Process
 {
     if (!$arguments) {
         $arguments = ['analyze', context()->workingDirectory];
@@ -56,7 +68,11 @@ function phpstan(?array $arguments = null, string $version = '*', array $extraDe
     return run_php($binaryPath, $arguments);
 }
 
-function php_cs_fixer(?array $arguments = null, string $version = '*', array $extraDependencies = [], bool $dryRun = false, bool $diff = false)
+/**
+ * @param list<string> $arguments
+ * @param array<string, string> $extraDependencies
+ */
+function php_cs_fixer(?array $arguments = null, string $version = '*', array $extraDependencies = [], bool $dryRun = false, bool $diff = false): Process
 {
     if (null === $arguments) {
         $arguments = ['fix', context()->workingDirectory . '/src'];
@@ -80,9 +96,13 @@ function php_cs_fixer(?array $arguments = null, string $version = '*', array $ex
     return run_php($binaryPath, $arguments);
 }
 
-function composer(array $arguments, $composerJsonFilePath)
+/**
+ * @param list<string> $arguments
+ */
+function composer(array $arguments, string $composerJsonFilePath): void
 {
-    $output = output();
+    $currentOutput = output();
+    $output = context()->verbosityLevel->value > VerbosityLevel::NORMAL->value ? $currentOutput : new \Symfony\Component\Console\Output\NullOutput();
     $args[] = '--working-dir';
     $args[] = \dirname($composerJsonFilePath);
     $args[] = '--no-interaction';
