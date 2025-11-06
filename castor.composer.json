@@ -1,0 +1,27 @@
+{
+  "name": "php-qa/castor",
+  "description": "Castor commands for project php-qa",
+  "type": "castor-project",
+  "config": {
+    "optimize-autoloader": true,
+    "sort-packages": true
+  },
+  "authors": [
+    {
+      "name": "Joel Wurtz",
+      "email": "joel.wurtz@gmail.com"
+    }
+  ],
+  "require": {
+    "castor-php/php-qa": "dev-main"
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../"
+    },
+    {
+      "packagist.org": false
+    }
+  ]
+}
