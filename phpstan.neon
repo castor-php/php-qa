@@ -1,0 +1,11 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 8
+    excludePaths:
+        analyseAndScan:
+            - .castor
+    paths:
+        - .castor.stub.php
+        - src

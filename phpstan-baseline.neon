@@ -1,0 +1,31 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Call to method run\(\) on an unknown class Castor\\Import\\Remote\\ComposerApplication\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/functions.php
+
+		-
+			message: '#^Call to method setAutoExit\(\) on an unknown class Castor\\Import\\Remote\\ComposerApplication\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/functions.php
+
+		-
+			message: '#^Instantiated class Castor\\Import\\Remote\\ComposerApplication not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/functions.php
+
+		-
+			message: '#^Instantiated class Symfony\\Component\\Console\\Input\\ArgvInput not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/functions.php
+
+		-
+			message: '#^Instantiated class Symfony\\Component\\Console\\Output\\NullOutput not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/functions.php
