@@ -5,8 +5,11 @@ namespace Castor\PHPQa\Castor;
 use Castor\Attribute\AsRawTokens;
 use Castor\Attribute\AsTask;
 
+use function Castor\guard_min_version;
 use function Castor\PHPQa\php_cs_fixer;
 use function Castor\PHPQa\phpstan;
+
+guard_min_version('1.1.0');
 
 #[AsTask('phpstan', namespace: 'qa')]
 function qa_phpstan(string $phpstanVersion = '*', #[AsRawTokens] array $rawTokens = [])

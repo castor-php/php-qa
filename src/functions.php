@@ -58,12 +58,12 @@ function phpstan(?array $arguments = null, string $version = '*', array $extraDe
         $arguments = ['analyze', context()->workingDirectory];
     }
 
-    $phpstanDirectory = create_tools('phpstan', [
+    $directory = create_tools('phpstan', [
         'phpstan/phpstan' => $version,
         ...$extraDependencies,
     ]);
 
-    $binaryPath = $phpstanDirectory . '/vendor/bin/phpstan';
+    $binaryPath = $directory . '/vendor/bin/phpstan';
 
     return run_php($binaryPath, $arguments);
 }
@@ -86,12 +86,12 @@ function php_cs_fixer(?array $arguments = null, string $version = '*', array $ex
         }
     }
 
-    $phpstanDirectory = create_tools('php-cs-fixer', [
+    $directory = create_tools('php-cs-fixer', [
         'friendsofphp/php-cs-fixer' => $version,
         ...$extraDependencies,
     ]);
 
-    $binaryPath = $phpstanDirectory . '/vendor/bin/php-cs-fixer';
+    $binaryPath = $directory . '/vendor/bin/php-cs-fixer';
 
     return run_php($binaryPath, $arguments);
 }
@@ -107,11 +107,15 @@ function composer(array $arguments, string $composerJsonFilePath): void
     $args[] = \dirname($composerJsonFilePath);
     $args[] = '--no-interaction';
 
+    $_SERVER['COMPOSER_VENDOR_DIR'] = \dirname($composerJsonFilePath) . '/vendor';
+
     $argvInput = new ArgvInput(['composer', ...$args, ...$arguments]);
 
     $composerApplication = new ComposerApplication();
     $composerApplication->setAutoExit(false);
     $exitCode = $composerApplication->run($argvInput, $output);
+
+    unset($_SERVER['COMPOSER_VENDOR_DIR']);
 
     if (0 !== $exitCode) {
         throw new RuntimeException('The Composer process failed');

@@ -4,15 +4,15 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2a04f480f401328c9a25e2a86b54c1b7",
+    "content-hash": "9688b87feba34af81bddb5e39ba5e65c",
     "packages": [
         {
             "name": "castor-php/php-qa",
             "version": "dev-main",
             "dist": {
                 "type": "path",
-                "url": "..",
-                "reference": "88c5144e24d05ac04b0deff073f2c41a4aba288c"
+                "url": ".",
+                "reference": "1d58df3ce080c3090ccdb82076fb2326baa495b0"
             },
             "require-dev": {
                 "jolicode/castor": "^0.22.1"
@@ -51,5 +51,5 @@
     "prefer-lowest": false,
     "platform": {},
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
