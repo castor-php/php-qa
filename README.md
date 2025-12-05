@@ -73,4 +73,5 @@ function qa_php_cs_fixer()
 
 * [PHPStan](https://phpstan.org/): `Castor\PHPQa\phpstan()` function
 * [PHP CS Fixer](https://cs.symfony.com/): `Castor\PHPQa\php_cs_fixer()` function
-
+* [Rector](https://getrector.org/): `Castor\PHPQa\rector()` function
+* [Twig Cs Fixer](https://twigcsfixer.github.io/): `Castor\PHPQa\twig_cs_fixer()` function

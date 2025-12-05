@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": ".",
-                "reference": "1d58df3ce080c3090ccdb82076fb2326baa495b0"
+                "reference": "fe2f69be9071622375ce42e8d7ae718ecf3194db"
             },
             "require-dev": {
                 "jolicode/castor": "^0.22.1"

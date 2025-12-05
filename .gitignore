@@ -1,5 +1,6 @@
 /vendor/
 .php-cs-fixer.cache
+.twig-cs-fixer.cache
 .castor.stub.php
 composer.lock
 .castor

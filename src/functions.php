@@ -15,40 +15,6 @@ use function Castor\output;
 use function Castor\run_php;
 
 /**
- * @param array<string, string> $dependencies A list of composer dependencies to require
- * @return string
- */
-function create_tools(string $name, array $dependencies = []): string
-{
-    $toolsDirectory = context()->workingDirectory . '/.castor/vendor/.tools/' . $name;
-    $composerFile = $toolsDirectory . '/composer.json';
-
-    if (!is_dir($toolsDirectory)) {
-        mkdir($toolsDirectory, 0755, true);
-    }
-
-    // create composer json
-    $composerJson = json_encode([
-        'name' => 'tools/' . $name,
-        'require' => $dependencies
-    ]);
-
-    fingerprint(
-        callback: function () use ($composerFile, $composerJson) {
-            file_put_contents($composerFile, $composerJson);
-
-            composer(['update'], $composerFile);
-        },
-        id: 'tools-' . $name,
-        fingerprint: hasher()->write((string) $composerJson)->finish(),
-        force: !file_exists($composerFile),
-    );
-
-    return $toolsDirectory;
-}
-
-
-/**
  * @param list<string> $arguments
  * @param array<string, string> $extraDependencies
  */
@@ -94,6 +60,83 @@ function php_cs_fixer(?array $arguments = null, string $version = '*', array $ex
     $binaryPath = $directory . '/vendor/bin/php-cs-fixer';
 
     return run_php($binaryPath, $arguments);
+}
+
+/**
+ * @param list<string> $arguments
+ * @param array<string, string> $extraDependencies
+ */
+function rector(?array $arguments = null, string $version = '*', array $extraDependencies = [], bool $dryRun = false): Process
+{
+    if (null === $arguments) {
+        $arguments = [context()->workingDirectory . '/src'];
+
+        if ($dryRun) {
+            $arguments[] = '--dry-run';
+        }
+    }
+
+    $directory = create_tools('rector', [
+        'rector/rector' => $version,
+        ...$extraDependencies,
+    ]);
+
+    $binaryPath = $directory . '/vendor/bin/rector';
+
+    return run_php($binaryPath, $arguments);
+}
+
+/**
+ * @param list<string> $arguments
+ * @param array<string, string> $extraDependencies
+ */
+function twig_cs_fixer(?array $arguments = null, string $version = '*', array $extraDependencies = []): Process
+{
+    if (null === $arguments) {
+        $arguments = ['fix', context()->workingDirectory . '/src'];
+    }
+
+    $directory = create_tools('twig-cs-fixer', [
+        'vincentlanglet/twig-cs-fixer' => $version,
+        ...$extraDependencies,
+    ]);
+
+    $binaryPath = $directory . '/vendor/bin/twig-cs-fixer';
+
+    return run_php($binaryPath, $arguments);
+}
+
+/**
+ * @param array<string, string> $dependencies A list of composer dependencies to require
+ * @return string
+ */
+function create_tools(string $name, array $dependencies = []): string
+{
+    $toolsDirectory = context()->workingDirectory . '/.castor/vendor/.tools/' . $name;
+    $composerFile = $toolsDirectory . '/composer.json';
+
+    if (!is_dir($toolsDirectory)) {
+        mkdir($toolsDirectory, 0755, true);
+    }
+
+    // create composer json
+    $composerJson = json_encode([
+        'name' => 'tools/' . $name,
+        'require' => $dependencies
+    ]);
+
+    fingerprint(
+        callback: function () use ($composerFile, $composerJson) {
+            file_put_contents($composerFile, $composerJson);
+
+            composer(['update'], $composerFile);
+        },
+        id: 'tools-' . $name,
+        fingerprint: hasher()->write((string) $composerJson)->finish(),
+        force: !file_exists($composerFile),
+    );
+
+    return $toolsDirectory;
 }
 
 /**
