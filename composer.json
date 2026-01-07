@@ -2,6 +2,9 @@
     "name": "castor-php/php-qa",
     "description": "PHP Quality tools functions for castor",
     "type": "castor-plugin",
+    "require": {
+        "php": ">=8.3"
+    },
     "require-dev": {
         "jolicode/castor": "^0.22.1"
     },

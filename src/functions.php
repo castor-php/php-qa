@@ -4,7 +4,6 @@ namespace Castor\PHPQa;
 
 use Castor\Console\Output\VerbosityLevel;
 use Castor\Import\Remote\ComposerApplication;
-use http\Exception\RuntimeException;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Process\Process;
 
@@ -119,11 +118,20 @@ function create_tools(string $name, array $dependencies = []): string
         mkdir($toolsDirectory, 0755, true);
     }
 
+    $allowPlugins = [];
+
+    foreach ($dependencies as $package => $version) {
+        $allowPlugins[$package] = true;
+    }
+
     // create composer json
     $composerJson = json_encode([
         'name' => 'tools/' . $name,
-        'require' => $dependencies
-    ]);
+        'require' => $dependencies,
+        'config' => [
+            'allow-plugins' => $allowPlugins,
+        ],
+    ], JSON_THROW_ON_ERROR);
 
     fingerprint(
         callback: function () use ($composerFile, $composerJson) {
@@ -161,6 +169,6 @@ function composer(array $arguments, string $composerJsonFilePath): void
     unset($_SERVER['COMPOSER_VENDOR_DIR']);
 
     if (0 !== $exitCode) {
-        throw new RuntimeException('The Composer process failed');
+        throw new \RuntimeException('The Composer process failed');
     }
 }
