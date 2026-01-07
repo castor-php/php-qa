@@ -4,7 +4,11 @@ namespace Castor\PHPQa;
 
 use Castor\Console\Output\VerbosityLevel;
 use Castor\Import\Remote\ComposerApplication;
+use Symfony\Component\Console\Helper\ProgressIndicator;
 use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\Output;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
 use function Castor\context;
@@ -134,10 +138,10 @@ function create_tools(string $name, array $dependencies = []): string
     ], JSON_THROW_ON_ERROR);
 
     fingerprint(
-        callback: function () use ($composerFile, $composerJson) {
+        callback: function () use ($name, $composerFile, $composerJson): void {
             file_put_contents($composerFile, $composerJson);
 
-            composer(['update'], $composerFile);
+            composer($name, ['update'], $composerFile);
         },
         id: 'tools-' . $name,
         fingerprint: hasher()->write((string) $composerJson)->finish(),
@@ -150,10 +154,31 @@ function create_tools(string $name, array $dependencies = []): string
 /**
  * @param list<string> $arguments
  */
-function composer(array $arguments, string $composerJsonFilePath): void
+function composer(string $name, array $arguments, string $composerJsonFilePath): void
 {
     $currentOutput = output();
-    $output = context()->verbosityLevel->value > VerbosityLevel::NORMAL->value ? $currentOutput : new \Symfony\Component\Console\Output\NullOutput();
+    $progressIndicator = null;
+
+    if (context()->verbosityLevel->value <= VerbosityLevel::NORMAL->value) {
+        $progressIndicator = new ProgressIndicator($currentOutput, null, 100, ['⠏', '⠛', '⠹', '⢸', '⣰', '⣤', '⣆', '⡇']);
+        $progressIndicator->start('<comment>Installing/Updating ' . $name . '...</comment>');
+
+        $output = new class ($progressIndicator) extends Output {
+            public function __construct(
+                private readonly ProgressIndicator $progressIndicator,
+            ) {
+                parent::__construct(OutputInterface::VERBOSITY_VERY_VERBOSE);
+            }
+
+            public function doWrite(string $message, bool $newline): void
+            {
+                $this->progressIndicator->advance();
+            }
+        };
+    } else {
+        $output = $currentOutput;
+    }
+
     $args[] = '--working-dir';
     $args[] = \dirname($composerJsonFilePath);
     $args[] = '--no-interaction';
@@ -171,4 +196,7 @@ function composer(array $arguments, string $composerJsonFilePath): void
     if (0 !== $exitCode) {
         throw new \RuntimeException('The Composer process failed');
     }
+
+    $progressIndicator?->finish('<comment>' . $name . ' installed.</comment>');
+
 }

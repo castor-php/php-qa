@@ -28,10 +28,10 @@ function qa_php_cs_fixer(string $csFixerVersion = '*', #[AsRawTokens] array $raw
 }
 
 #[AsTask('rector', namespace: 'qa')]
-function qa_rector(string $csFixerVersion = '*', #[AsRawTokens] array $rawTokens = [])
+function qa_rector(string $rectorVersion = '*', #[AsRawTokens] array $rawTokens = [])
 {
     $args = empty($rawTokens) ? null : $rawTokens;
-    rector($args, version: $csFixerVersion);
+    rector($args, version: $rectorVersion);
 }
 
 #[AsTask('twig-cs-fixer', namespace: 'qa')]
