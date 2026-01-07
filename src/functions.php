@@ -23,7 +23,7 @@ use function Castor\run_php;
  */
 function phpstan(?array $arguments = null, string $version = '*', array $extraDependencies = []): Process
 {
-    if (!$arguments) {
+    if (null === $arguments) {
         $arguments = ['analyze', context()->workingDirectory];
     }
 
