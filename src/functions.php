@@ -115,12 +115,8 @@ function twig_cs_fixer(?array $arguments = null, string $version = '*', array $e
  */
 function create_tools(string $name, array $dependencies = []): string
 {
-    $toolsDirectory = context()->workingDirectory . '/.castor/vendor/.tools/' . $name;
-    $composerFile = $toolsDirectory . '/composer.json';
-
-    if (!is_dir($toolsDirectory)) {
-        mkdir($toolsDirectory, 0755, true);
-    }
+    // Keep dependency order stable so equivalent sets share the same cache key.
+    ksort($dependencies);
 
     $allowPlugins = [];
 
@@ -137,14 +133,22 @@ function create_tools(string $name, array $dependencies = []): string
         ],
     ], JSON_THROW_ON_ERROR);
 
+    $cacheKey = hasher()->write((string) $composerJson)->finish();
+    $toolsDirectory = context()->workingDirectory . '/.castor/vendor/.tools/' . $name . '-' . substr($cacheKey, 0, 12);
+    $composerFile = $toolsDirectory . '/composer.json';
+
+    if (!is_dir($toolsDirectory)) {
+        mkdir($toolsDirectory, 0755, true);
+    }
+
     fingerprint(
         callback: function () use ($name, $composerFile, $composerJson): void {
             file_put_contents($composerFile, $composerJson);
 
             composer($name, ['update'], $composerFile);
         },
-        id: 'tools-' . $name,
-        fingerprint: hasher()->write((string) $composerJson)->finish(),
+        id: 'tools-' . $name . '-' . substr($cacheKey, 0, 12),
+        fingerprint: $cacheKey,
         force: !file_exists($composerFile),
     );
 
